@@ -20,6 +20,41 @@
             }
         }
     </script>
+    <style>
+    @keyframes fadeSlideUp {
+      from {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .chat-fade-slide-up {
+      animation: fadeSlideUp 0.6s ease-in-out forwards;
+    }
+     #chatBox {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 100%;
+    max-width: 300px;   /* nhỏ gọn hơn */
+    max-height: 500px;  /* giảm chiều cao */
+    border-radius: 12px; /* bo góc mềm mại */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    overflow: hidden;
+    background: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  /* Hiệu ứng hover phóng to nhẹ */
+  #chatBox:hover {
+    transform: scale(1.05); /* phóng to 5% */
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2); /* bóng đậm hơn khi hover */
+  }
+  </style>
 </head>
 <body class="bg-gray-50 font-sans">
     <!-- Floating Chat Button -->
@@ -304,34 +339,42 @@
             </div>
         </div>
     </div>
-
+    
     <script>
-        feather.replace();
-        // Chat functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatToggle = document.getElementById('chatToggle');
-            const chatBox = document.getElementById('chatBox');
-            const closeChat = document.getElementById('closeChat');
-            
-            chatToggle.addEventListener('click', function() {
-                chatBox.classList.toggle('hidden');
-                feather.replace();
-                
-                // Resize iframe when shown to ensure proper rendering
-                if (!chatBox.classList.contains('hidden')) {
-                    setTimeout(() => {
-                        const iframe = document.getElementById('gradioIframe');
-                        if (iframe) {
-                            iframe.style.height = 'calc(100% - 80px)';
-                        }
-                    }, 100);
-                }
-            });
-            
-            closeChat.addEventListener('click', function() {
-                chatBox.classList.add('hidden');
-            });
+    feather.replace();
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatToggle = document.getElementById('chatToggle');
+        const chatBox = document.getElementById('chatBox');
+        const closeChat = document.getElementById('closeChat');
+
+        // Mở chatBox ngay khi load trang với hiệu ứng fade + slide-up
+        chatBox.classList.remove('hidden');
+        chatBox.classList.add('chat-fade-slide-up');
+
+        setTimeout(() => {
+            const iframe = document.getElementById('gradioIframe');
+            if (iframe) {
+                iframe.style.height = 'calc(100% - 80px)';
+            }
+        }, 100);
+
+        chatToggle.addEventListener('click', function() {
+            chatBox.classList.toggle('hidden');
+            if (!chatBox.classList.contains('hidden')) {
+                chatBox.classList.add('chat-fade-slide-up');
+                setTimeout(() => {
+                    const iframe = document.getElementById('gradioIframe');
+                    if (iframe) {
+                        iframe.style.height = 'calc(100% - 80px)';
+                    }
+                }, 100);
+            }
         });
+
+        closeChat.addEventListener('click', function() {
+            chatBox.classList.add('hidden');
+        });
+    });
 </script>
 <script src="https://huggingface.co/deepsite/deepsite-badge.js"></script>
 </body>
